@@ -5,7 +5,7 @@ import * as io from 'socket.io-client';
   providedIn: 'root'
 })
 export class EmailService {
-  private url = 'http://localhost:3002'
+  private url = 'http://api.meetingplanner.ml'
   private socket;
   constructor() {
     this.socket = io(this.url)

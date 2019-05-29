@@ -8,7 +8,7 @@ import { Cookie } from 'ng2-cookies';
   providedIn: 'root'
 })
 export class MeetingService {
-  private baseUrl = 'http://localhost:3002/api/v1/meetings'
+  private baseUrl = 'http://api.meetingplanner.ml/api/v1/meetings'
 
   constructor(private http : HttpClient) { }
 

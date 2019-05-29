@@ -1,0 +1,66 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col p-0">
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1E2129;">
+        <h1 class="logo"  [routerLink]="['/admin/home']">Meeting Planner</h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="text-white d-flex flex-direction-row align-items-center margin">
+              <div class="d-block d-lg-none">
+                <h5>&nbsp;&nbsp;{{userInfo.fullName}}</h5>
+                <div class="text-muted" style="margin-top:-10px">@{{userInfo.userName}}</div>
+              </div>
+              <div class="text-white ml-auto link" [routerLink]="['/admin/home']">Home</div>
+            </li>
+            <li class="nav-item d-flex align-items-center ml-auto margin">
+              <div class="text-white ml-auto link" (click)="logout()">Logout</div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col p-0">
+      <div class="container-fluid" *ngIf="userInfo">
+        <div class="row">
+          <div class="d-lg-block col-lg-2 d-none purple-bg full-height">
+            <div class="row" style="margin-top:20px;">
+              <div class="col d-flex justify-content-center">
+                <h2 class="text-light">{{userInfo.fullName}}</h2>
+              </div>
+              <div class="w-100"></div>
+              <div class="col d-flex justify-content-center">
+                <div class="text-muted">@{{userInfo.userName}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-10 col-12 full-height gray-bg">
+            <div class="row">
+              <div class="col-lg-6 col-12" *ngFor="let user of allUsers">
+                <div class="card margin card-animation">
+                  <div class="card-body">
+                    <h5 class="card-title">{{user.firstName}} {{user.lastName}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@{{user.userName}}</h6>
+                    <p class="card-text"><b>Email:&nbsp;</b>{{user.email}}<br><b>Contact:&nbsp;</b>+{{user.countryCode}}-{{user.mobileNumber}}</p>
+                    <a class="btn btn-primary" [routerLink]="['/admin/meeting',user.userId]">Open</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="allUsers != null && allUsers != undefined">
+              <div class="col-12 d-flex justify-content-center" style="cursor:pointer;" (click)="loadMoreUsers()" *ngIf="allUsers.length>=10">Load
+                More Users</div>
+              <div class="col-12 d-flex justify-content-center" *ngIf="loadingMoreUsers">Loading..</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,34 @@
+<div class="container-fluid background-doodle" *ngIf = "siteFound==true">
+  <div class="row h-100">
+    <br>
+    <br>
+      <div class="col-12 d-flex justify-content-center">
+          <h1 id="logo">Meeting Planner</h1>
+          </div>
+      <div class="col align-self-center modal-dialog-centered">
+      <div class="modal-content modal-dialog">
+        <div class="container">
+          <div class="row modal-body">
+            <div class="col">
+              <h1 class="d-flex justify-content-center">Account Activated</h1>
+              <div class="modal-footer container">
+                <div class="col">
+                  Click <a [routerLink]="['/login']">here</a> to start login.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="siteFound==false" class="container-fluid d-flex justify-content-center align-items-center background-doodle" style="width:100vw; height:100vh;">
+  <div class="card">
+    <img class="card-img-top" src="./assets/notfound.jpg" alt="Card image cap">
+    <div class="card-body">
+      <p class="card-text">Please try again!</p>
+      <a [routerLink]="['/home']" class="btn btn-danger">Retry</a>
+    </div>
+  </div>
+</div>

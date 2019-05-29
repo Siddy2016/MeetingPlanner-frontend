@@ -1,0 +1,207 @@
+<div class="container-fluid" *ngIf="pageFound==true">
+  <ng-template #modalContent let-modal class="modal fade">
+    <div class="modal-header">
+      <h4 class="modal-title">
+        <div class="row no-gutters">
+          <div class="col-auto">Meeting admin:&nbsp;</div>
+          <div class="col">{{meetingData.event.adminFullName}}<br>
+            <div style="font-size:15px;">@{{meetingData.event.adminUserName}}</div>
+          </div>
+        </div>
+      </h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form #createMeeting="ngForm" (ngSubmit)="createMeetingFunction()">
+        <div class="form-group d-lg-flex flex-direction-row">
+          <div>
+            <div>Start Time</div>
+            <input *ngIf="readOnly==true" [value]="startTime | date : 'dd/MM/yyyy - HH:mm'" placeholder="Start" autocomplete="off" class="form-control"
+              type="text" [readonly]="readOnly">
+            <!-- [value] or [(ngModel)] does not work without name attr (ngModel should not be present) -->
+            <input *ngIf="readOnly==false" name="start" [(ngModel)]="startTime" placeholder="Start" autocomplete="off" class="form-control"
+              type="text" mwlFlatpickr (ngModelChange)="refresh.next()" [convertModelValue]="true" enableTime="true" dateFormat="d/m/Y - H:i"
+              minDate="today" maxDate="01/06/2019" [allowInput]="true" static="true" [readonly]="readOnly">
+          </div>
+          <div class="ml-auto">
+            <div>End Time</div>
+            <input *ngIf="readOnly==true" [value]="endTime | date : 'dd/MM/yyyy - HH:mm'" placeholder="Start" autocomplete="off" class="form-control"
+              type="text" [readonly]="readOnly">
+            <input *ngIf="readOnly==false" autocomplete="off" placeholder="End" class="form-control" name="end" type="text" mwlFlatpickr
+              [(ngModel)]="endTime" (ngModelChange)="refresh.next()" [convertModelValue]="true" enableTime="true" dateFormat="d/m/Y - H:i"
+              minDate="today" maxDate="31/12/2019" [allowInput]="true" static="true" [readonly]="readOnly">
+          </div>
+        </div>
+        <div class="form-group">
+          <div>Title</div>
+          <input name="title" [(ngModel)]="meetingTitle" placeholder="purpose of the meeting" type="text" class="form-control" required
+            autocomplete="off" [readonly]="readOnly">
+        </div>
+        <div class="form-group">
+          <div>Venue</div>
+          <input name="place" type="text" [(ngModel)]="meetingVenue" placeholder="eg. meeting room" class="form-control" required autocomplete="off"
+            [readonly]="readOnly">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteMeetingModal" (click)="modal.dismiss('Cross click')">Delete</button>
+          <button *ngIf="readOnly==true" type="button" class="btn btn-success" (click)="readOnly=false">Edit</button>
+          <button *ngIf="readOnly==false" type="button" class="btn btn-primary" (click)="readOnly=true;modal.dismiss('Cross click');editMeeting()">Save</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  <div class="modal fade" id="deleteMeetingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark" id="exampleModalLongTitle">Are you sure you want to delete the meeting?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="cancel btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger" (click)="deleteMeeting(meetingData.event)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col p-0">
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1E2129;">
+        <h1 class="logo" [routerLink]="['/admin/home']">Meeting Planner</h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="text-white d-flex flex-direction-row align-items-center margin">
+              <div class="d-block d-lg-none">
+                <h5>&nbsp;&nbsp;{{userInfo.fullName}}</h5>
+                <div class="text-muted" style="margin-top:-10px">@{{userInfo.userName}}</div>
+              </div>
+              <a class="text-white ml-auto" [routerLink]="['/admin/home']">Home</a>
+            </li>
+            <li class="text-white d-flex flex-direction-row align-items-center margin">
+              <div class="d-block d-lg-none">
+                <button *ngIf="validateCreateMeeting()" type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#createMeetingModal"
+                  (click)="meetingTitle='';meetingVenue='';currentTimeOnly()">
+                  Create Meeting
+                </button>
+                <button *ngIf="!validateCreateMeeting()" type="button" class="btn btn-primary w-100" (click)="toastrService.error('Meeting cannot be created for past days')">
+                  Create Meeting
+                </button>
+              </div>
+              <div class="text-white ml-auto link" (click)="logout()">Logout</div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="pageFound==true">
+  <div class="row">
+    <div class="col p-0">
+      <div class="container-fluid" *ngIf="userInfo">
+        <div class="row">
+          <div class="d-lg-block col-lg-2 d-none purple-bg" style="height:100vh;">
+            <div class="row" style="margin-top:20px;">
+              <div class="col d-flex justify-content-center">
+                <h2 class="text-light">{{userInfo.fullName}}</h2>
+              </div>
+              <div class="w-100"></div>
+              <div class="col d-flex justify-content-center">
+                <div class="text-muted">@{{userInfo.userName}}</div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:20px;">
+              <div class="container">
+                <button *ngIf="validateCreateMeeting()" type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#createMeetingModal"
+                  (click)="meetingTitle='';meetingVenue='';currentTimeOnly()">
+                  Create Meeting
+                </button>
+                <button *ngIf="!validateCreateMeeting()" type="button" class="btn btn-primary w-100" (click)="toastrService.error('Meeting cannot be created for past days')">
+                  Create Meeting
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-10 col-12 full-height">
+            <div class="modal fade" id="createMeetingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Create Meeting</h5>
+                  </div>
+                  <div class="modal-body">
+                    <form #createMeeting="ngForm" (ngSubmit)="createMeetingFunction()">
+                      <div class="form-group d-lg-flex flex-direction-row">
+                        <div>
+                          <div>Start Time</div>
+                          <input name="start" [(ngModel)]="startTime" placeholder="Start" autocomplete="off" class="form-control" type="text" mwlFlatpickr
+                            (ngModelChange)="refresh.next()" value="startTime" [convertModelValue]="true" enableTime="true"
+                            dateFormat="d/m/Y - H:i" minDate="today" maxDate="01/06/2019" [allowInput]="true" static="true">
+                        </div>
+                        <div class="ml-auto">
+                          <div>End Time</div>
+                          <input autocomplete="off" placeholder="End" class="form-control" name="end" type="text" mwlFlatpickr [(ngModel)]="endTime"
+                            (ngModelChange)="refresh.next()" [convertModelValue]="true" enableTime="true" dateFormat="d/m/Y - H:i"
+                            minDate="today" maxDate="31/12/2019" [allowInput]="true" static="true">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div>Title</div>
+                        <input name="title" [(ngModel)]="meetingTitle" placeholder="purpose of the meeting" type="text" class="form-control" required
+                          autocomplete="off">
+                      </div>
+                      <div class="form-group">
+                        <div>Venue</div>
+                        <input name="place" type="text" [(ngModel)]="meetingVenue" placeholder="eg. meeting room" class="form-control" required autocomplete="off">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="cancel btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" [disabled]="!createMeeting.form.valid" class="btn btn-primary">Create</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div [ngSwitch]="view">
+              <div class="row no-gutters">
+                <div class="col-auto">
+                  <button type="button" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false"
+                    class="btn btn-primary" (click)="changeStartEndOnDayChange()">Prev</button>
+                </div>
+                <div class="col text-center">
+                  <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+                </div>
+                <div class="col-auto">
+                  <button type="button" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false"
+                    class="btn btn-primary" (click)="changeStartEndOnDayChange()">Next</button>
+                </div>
+              </div>
+              <div *ngIf="view == CalendarView.Day" class="text-center"><button type="button" class="btn btn-primary" (click)="view =  CalendarView.Month">Back
+                  to User Calendar</button></div>
+              <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [refresh]="refresh" (dayClicked)="dayClicked($event.day)" [viewDate]="viewDate"
+                [events]="events" (click)="view =  CalendarView.Day">
+              </mwl-calendar-month-view>
+              <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [refresh]="refresh" [viewDate]="viewDate" [events]="events" (eventClicked)="handleEvent('Clicked', $event.event)">
+              </mwl-calendar-day-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div *ngIf="pageFound==false" class="container-fluid d-flex justify-content-center align-items-center background-doodle" style="width:100vw; height:100vh;">
+    <div class="card">
+      <img class="card-img-top" src="./assets/notfound.jpg" alt="Card image cap">
+      <div class="card-body">
+        <p class="card-text">Please try again!</p>
+        <a [routerLink]="['/home']" class="btn btn-danger">Retry</a>
+      </div>
+    </div>
+  </div>

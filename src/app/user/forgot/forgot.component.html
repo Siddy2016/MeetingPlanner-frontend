@@ -1,0 +1,36 @@
+<div class="container-fluid background-doodle">
+  <div class="row h-100">
+    <br>
+    <br>
+      <div class="col-12 d-flex justify-content-center">
+        <h1 id="logo">Meeting Planner</h1>
+         </div>
+          <div class="col align-self-center modal-dialog-centered">
+      <div class="modal-content modal-dialog">
+        <div class="container">
+          <div class="row modal-body">
+            <div class="col">
+              <form #emailUser="ngForm" (ngSubmit)="emailFunction(emailUser)">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input name='email' ngModel type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                    placeholder="Enter email" required>
+                  <small id="emailHelp" class="form-text text-muted">Provide e-mail credentials of the forgotten password.</small>
+                </div>
+                <div class="modal-footer container">
+                  <div class="col">
+                    <a [routerLink]="['/login']">&lt;&lt;&nbsp;Back to Login</a>
+                  </div>
+                  <button type="submit" class="btn btn-success" [disabled]="!emailUser.form.valid">Submit</button>
+                </div>
+                <div class="col-12 text-muted text-center">
+                    Be updated with your planner app
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

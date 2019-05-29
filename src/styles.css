@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+
+#logo{
+    font-weight: bolder;
+    font-size: 4em;
+    color: silver;
+    
+    
+}
+/* .container, .container-full, .container-fluid{
+    word-break:break-all;
+} */
+
+.link{
+    cursor: pointer;
+}
+.link:hover {
+    text-decoration: underline;
+}
+

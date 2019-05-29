@@ -1,0 +1,49 @@
+.logo {
+    font-weight: bolder;
+    cursor: pointer;
+    color: aqua;
+    
+}
+.full-height{
+    height:88.6vh;
+    overflow-y : auto;
+}
+.purple-bg{
+    background-color:#292633;
+}
+.card-animation{
+    transition: transform .2s;
+}
+.card-animation:hover {
+    transform: scale(1.1);
+    z-index: 10;
+}
+.margin{
+    margin:10px;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+.fill-height {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }

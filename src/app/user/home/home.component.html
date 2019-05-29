@@ -1,0 +1,128 @@
+<div class="container-fluid">
+    <ng-template #modalContent let-modal class="modal fade">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <div class="row no-gutters">
+              <div class="col-auto">Meeting admin:&nbsp;</div>
+              <div class="col">{{meetingData.event.adminFullName}}<br>
+              <div style="font-size:15px;">@{{meetingData.event.adminUserName}}</div></div>
+            </div>
+          </h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group d-lg-flex flex-direction-row">
+              <div>
+                <div>Start Time</div>
+                <input [value]="meetingData.event.start | date : 'dd/MM/yyyy - HH:mm'" class="form-control" type="text" readonly>
+              </div>
+              <div class="ml-auto">
+                <div>End Time</div>
+                <input [value]="meetingData.event.end | date : 'dd/MM/yyyy - HH:mm'" class="form-control" type="text" readonly>
+              </div>
+            </div>
+            <div class="form-group">
+              <div>Title</div>
+              <input name="title" [value]="meetingData.event.title" type="text" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+              <div>Venue</div>
+              <input name="place" type="text" [value]="meetingData.event.title" class="form-control" readonly>
+            </div>
+          </form>
+        </div>
+      </ng-template>
+      <ng-template #modalReminder id="modalReminder" let-modal class="modal fade">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            A meeting is starting in a minute
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-auto"><b>Title:</b></div>
+              <div class="col">{{reminderContent.title}}</div>
+            </div>
+            <div class="row">
+              <div class="col-auto"><b>Venue:</b></div>
+              <div class="col">{{reminderContent.place}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" (click)="recallReminderModal();modal.dismiss('Cross click')">Snooze</button>
+            <button type="button" class="btn btn-danger" (click)="modal.dismiss('Cross click');toastrService.success('Reminder dismissed');">Dismiss</button>
+          </div>
+      </ng-template>
+  <div class="row">
+    <div class="col p-0">
+      <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1E2129;">
+        <h1 class="logo link" (click)="goToHome()">Meeting Planner</h1>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="text-white d-flex flex-direction-row align-items-center margin">
+              <div class="d-block d-lg-none">
+                <h5>&nbsp;&nbsp;{{userInfo.fullName}}</h5>
+                <div class="text-muted" style="margin-top:-10px">@{{userInfo.userName}}</div>
+              </div>
+              <div class="text-white ml-auto link" (click)="goToHome()">Home</div>
+            </li>
+            <li class="nav-item d-flex align-items-center ml-auto margin">
+              <div class="text-white ml-auto link" (click)="logout()">Logout</div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col p-0">
+      <div class="container-fluid" *ngIf="userInfo">
+        <div class="row">
+          <div class="d-lg-block col-lg-2 d-none purple-bg full-height">
+            <div class="row" style="margin-top:20px;">
+              <div class="col text-center">
+                <h2 class="text-light">{{userInfo.fullName}}</h2>
+              </div>
+              <div class="w-100"></div>
+              <div class="col d-flex justify-content-center">
+                <div class="text-muted">@{{userInfo.userName}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-10 col-12 full-height">
+            <div [ngSwitch]="view">
+                <div class="row no-gutters">
+                    <div class="col-auto">
+                      <button type="button" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false"
+                        class="btn btn-primary">Prev</button>
+                    </div>
+                    <div class="col text-center">
+                      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+                    </div>
+                    <div class="col-auto">
+                      <button type="button" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate" (viewDateChange)="activeDayIsOpen = false"
+                        class="btn btn-primary">Next</button>
+                    </div>
+                  </div>
+              <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [refresh]="refresh" (dayClicked)="dayClicked($event.day)" [viewDate]="viewDate" [events]="events"
+                (click)="view =  CalendarView.Day">
+              </mwl-calendar-month-view>
+              <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [refresh]="refresh" [viewDate]="viewDate" [events]="events" (eventClicked)="handleEvent('Clicked', $event.event)">
+              </mwl-calendar-day-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

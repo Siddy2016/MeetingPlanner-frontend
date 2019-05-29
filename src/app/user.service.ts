@@ -7,7 +7,7 @@ import { Cookie } from 'ng2-cookies';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost:3002/api/v1/users'
+  private baseUrl = 'http://api.meetingplanner.ml/api/v1/users'
   constructor(private http : HttpClient) { }
 
   public setUserInfoInLocalStorage = (data) =>{

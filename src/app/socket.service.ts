@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class SocketService {
-  private url = 'http://localhost:3002'
+  private url = 'http://api.meetingplanner.ml'
   private socket;
 
   constructor() {

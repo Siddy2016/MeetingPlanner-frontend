@@ -87,7 +87,7 @@ export class SignupComponent implements OnInit,CheckUser {
         if(apiResponse.status === 200){
           data['activateUserToken'] = apiResponse.data.activateUserToken
           this.emailService.sendWelcomeEmail(data)
-          this.toastrService.success(data.email,'Verification email sent to:')
+          this.toastrService.success(data.email,'Account successfully created for:')
           setTimeout(()=>{
             this.router.navigate(['/'])
           },2000)
